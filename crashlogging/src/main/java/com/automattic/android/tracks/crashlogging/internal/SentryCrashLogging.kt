@@ -11,6 +11,7 @@ import com.automattic.android.tracks.crashlogging.JsExceptionCallback
 import com.automattic.android.tracks.crashlogging.PerformanceMonitoringConfig.Disabled
 import com.automattic.android.tracks.crashlogging.PerformanceMonitoringConfig.Enabled
 import com.automattic.android.tracks.crashlogging.ReleaseName
+import com.automattic.android.tracks.crashlogging.SessionReplayConfig
 import com.automattic.android.tracks.crashlogging.eventLevel
 import io.sentry.Breadcrumb
 import io.sentry.Sentry
@@ -47,6 +48,13 @@ internal class SentryCrashLogging constructor(
                 }
             }
 
+            val (onErrorSampleRate, sessionSampleRate) = dataProvider.sessionReplayConfig.let {
+                when (it) {
+                    SessionReplayConfig.Disabled -> null to null
+                    is SessionReplayConfig.Enabled -> it.onErrorSampleRate to it.sessionSampleRate
+                }
+            }
+
             options.apply {
                 dsn = dataProvider.sentryDSN
                 environment = dataProvider.buildType
@@ -55,6 +63,10 @@ internal class SentryCrashLogging constructor(
                 }
                 this.tracesSampleRate = tracesSampleRate
                 this.profilesSampleRate = profilesSampleRate
+
+                this.sessionReplay.onErrorSampleRate = onErrorSampleRate
+                this.sessionReplay.sessionSampleRate = sessionSampleRate
+
                 isDebug = dataProvider.enableCrashLoggingLogs
                 setTag("locale", dataProvider.locale?.language ?: "unknown")
                 setBeforeBreadcrumb { breadcrumb, _ ->

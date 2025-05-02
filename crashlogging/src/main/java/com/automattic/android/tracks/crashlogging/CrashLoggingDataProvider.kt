@@ -35,6 +35,11 @@ interface CrashLoggingDataProvider {
     val performanceMonitoringConfig: PerformanceMonitoringConfig
 
     /**
+     * Provides configuration for Sentry Session Replay
+     */
+    val sessionReplayConfig: SessionReplayConfig
+
+    /**
      * Provides [CrashLogging] with information about the current user.
      *
      * @see CrashLoggingUser
@@ -121,6 +126,28 @@ sealed class PerformanceMonitoringConfig {
         init {
             assert(sampleRate in 0.0..1.0)
             assert(profilesSampleRate in 0.0..1.0)
+        }
+    }
+}
+
+sealed class SessionReplayConfig {
+    object Disabled : SessionReplayConfig()
+
+    data class Enabled(
+        /**
+         * The sample rate for replays that are recorded when an error happens. This type of replay will record up to a minute of events prior to the error and continue recording until the session ends.
+         * Has to be between 0 and 1.
+         */
+        val onErrorSampleRate: Double = 0.0,
+        /**
+         * The sample rate for replays that begin recording immediately and last the entirety of the user's session.
+         * Has to be between 0 and 1.
+         */
+        val sessionSampleRate: Double = 0.0,
+    ) : SessionReplayConfig() {
+        init {
+            assert(onErrorSampleRate in 0.0..1.0)
+            assert(sessionSampleRate in 0.0..1.0)
         }
     }
 }
