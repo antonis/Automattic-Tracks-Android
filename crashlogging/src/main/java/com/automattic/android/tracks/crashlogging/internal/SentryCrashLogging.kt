@@ -64,6 +64,7 @@ internal class SentryCrashLogging constructor(
                 this.tracesSampleRate = tracesSampleRate
                 this.profilesSampleRate = profilesSampleRate
 
+                this.sessionReplay.isDebug = dataProvider.enableCrashLoggingLogs
                 this.sessionReplay.onErrorSampleRate = onErrorSampleRate
                 this.sessionReplay.sessionSampleRate = sessionSampleRate
 
