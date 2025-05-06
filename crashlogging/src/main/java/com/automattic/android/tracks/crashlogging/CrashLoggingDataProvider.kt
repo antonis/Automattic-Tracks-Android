@@ -135,13 +135,14 @@ sealed class SessionReplayConfig {
 
     data class Enabled(
         /**
-         * The sample rate for replays that are recorded when an error happens. This type of replay will record up to a minute of events prior to the error and continue recording until the session ends.
-         * Has to be between 0 and 1.
+         * The sample rate for replays that are recorded when an error happens. This type of replay
+         * will record up to a minute of events prior to the error and continue recording until the
+         * session ends. Has to be between 0 and 1.
          */
         val onErrorSampleRate: Double = 0.0,
         /**
-         * The sample rate for replays that begin recording immediately and last the entirety of the user's session.
-         * Has to be between 0 and 1.
+         * The sample rate for replays that begin recording immediately and last the entirety of the
+         * user's session. Has to be between 0 and 1.
          */
         val sessionSampleRate: Double = 0.0,
     ) : SessionReplayConfig() {
